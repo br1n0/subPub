@@ -19,3 +19,18 @@ a message in console is given to prevent typing error or execution order error.
 
 The demo show how publish to global channel, with specific channel, 
 and how deSubscrbe/freed a channel
+
+
+-------
+
+```javascript
+	//HOW SUBSCRIBE a channel
+
+	// subscribe channel B, with aggiorna function
+	// so any data recived on channel, will be passed to aggiorna
+	var channelB= SubPub.subscribe( aggiorna, "B" )
+
+	// subscribe the default shared channel, with aggiorna function
+	// so any data recived on channel, will be passed to aggiorna
+	var channelShared=  SubPub.subscribe( aggiorna )
+```
