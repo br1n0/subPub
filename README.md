@@ -25,12 +25,23 @@ and how deSubscrbe/freed a channel
 
 ```javascript
 	//HOW SUBSCRIBE a channel
+	// pass the function used to process the data, and optionally the channel name
 
 	// subscribe channel B, with aggiorna function
 	// so any data recived on channel, will be passed to aggiorna
-	var channelB= SubPub.subscribe( aggiorna, "B" )
+	var channelBUnsubscribe= SubPub.subscribe( aggiorna, "B" )
 
 	// subscribe the default shared channel, with aggiorna function
 	// so any data recived on channel, will be passed to aggiorna
-	var channelShared=  SubPub.subscribe( aggiorna )
+	var channelSharedUnsubscribe=  SubPub.subscribe( aggiorna )
+```
+
+
+-------
+
+```javascript
+	//HOW  UnSUBSCRIBE a channel
+
+	//just fire the function that was returned when you subscribed a channel
+	var channelSharedUnsubscribe()
 ```
