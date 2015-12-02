@@ -46,7 +46,7 @@ and how deSubscrbe/freed a channel
 ```javascript
 	// HOW  Publish to a channel:
 	// just the data, and optionally the channel
-	// in case of channel parameter the default global channel will be used
+	// in case of missing channel parameter the default global channel will be used
 	SubPub.publish( "blaBlaBla",'B8')
 ```
 
