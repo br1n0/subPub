@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>angular publish subscribe</title>
+
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+
+<script>
+	var app = angular.module('app', [])
+</script>
+
+
+<script src= "subPub.js"></script>
+
+
+
+<script>
+app.controller('CtrlA', function($scope,SubPub)
+{
+
+	$scope.$on('$destroy',function(){
+	    //clean up code
+	    console.log("CtrlA","destroied")
+	});
+
+	$scope.msg= "work"
+
+
+
+
+	//simplest way to associate publish to channel 
+	$scope.annunciatore= SubPub.publish
+
+	$scope.consoleChannels= function()
+	{
+		console.log( "consoleChannels",SubPub.getChannels() )	
+	}
+
+
+	//the same in less concise way
+	//$scope.annunciatore= function(messaggio,canale)
+	//{
+	//	SubPub.publish( messaggio,canale );	
+	//}
+});
+
+
+
+
+app.controller('CtrlB', function($scope,SubPub)
+{
+	//this is the shortest way to subscribe channels
+	
+	//subscribe the shared channel between anyone, with aggiorna function
+	var channelShared=  SubPub.subscribe( aggiorna )
+	//PubSubService.subscribe( logga )
+
+	//subscribe channel B, with aggiorna function
+	var channelB= SubPub.subscribe( aggiorna, "B" )
+
+/*
+	//this method is less concise to subscribe the shared channel
+	SubPub.subscribe(function(data) {
+	    aggiorna(data)
+	});
+*/
+
+
+	// to prevent memory leak remember to free subscribers,
+	// it use the same mechanism used in angular to freeing whatchers
+	$scope.$on('$destroy',function()
+	{
+	    console.log("CtrlA","destroied")
+	    channelB()
+	    channelShared()
+	});
+
+	$scope.msg= "world"
+
+	//change the msg with data
+	function aggiorna(data)
+	{
+		$scope.msg= 'CtrlB-'+data
+	}
+
+	//write con console.log the dataa
+	function logga(data)
+	{
+	    console.log( "CtrlB riceve:" , data  )
+	}
+});
+
+
+
+app.controller('CtrlC', function($scope,SubPub)
+{
+
+	$scope.$on('$destroy',function(){
+	    //clean up code
+	    console.log("CtrlA","destroied")
+	});
+
+	$scope.msg= "testTest"
+
+	//change the msg with data
+	function aggiorna(data)
+	{
+		$scope.msg= 'CtrlC-'+data
+	}
+
+	//write con console.log the dataa
+	function logga(data)
+	{
+	    console.log( "CtrlC riceve:" , data  )
+	}
+
+	//quando messaggio globale, aggiorna
+	//subscribe the global channel, calling aggiorna function, the pointer is saved
+	var myChannelUnsubscribe=  SubPub.subscribe( aggiorna )
+
+	//publish on a channel not subscribed will fire on console an error, 
+	//to detect the rigth order subscribe, than publish
+	//publish before subscrive return an errore beacuse the data will be lost
+	SubPub.publish( "cazzata",'B8')
+
+
+	//subscribe channel C, with aggiorna function
+	SubPub.subscribe( aggiorna, "C" )
+
+
+	//jus to show that unsubscribe work
+	$scope.provaLiberaC= function( )
+	{
+		console.log( "unsubscribe C" )
+		myChannelUnsubscribe() //deregister or freed the subscribed channel
+		//so to properly freed a channler rimember to sava it, at creation
+		//you could save it on creation on array, annd deregister all the element in the array
+	}	
+
+
+/*
+	SubPub.subscribe( logga, "C" )
+	SubPub.subscribe( logga, "C" )
+	SubPub.subscribe( logga, "C" )
+*/
+
+});
+
+
+
+</script>
+</head>
+<body ng-app="app" >
+<pre>
+This is a simple channel based publish subscribe, that relay on Angular, 
+that provide a publish subscribe mechanism, but only from parent and childeren 
+this overcome implementing the publish subscribe paradigm.
+Is simple extend it to implement content type filtering.
+
+
+The Api provides just:
+publish 
+subscribe
+getChannels
+
+subscribe return a function to unsubscribed the channel, like angular whath do,
+don't forget to free resources, otherwise you got memory leaks.
+
+Because the order of execution matter, when you publish on channel where are no lister
+a message in console is given to prevent typing error or execution order error.
+
+on the demo show how publish to global channel, with specific channel, 
+and how deSubscrbe/freed a channel
+</pre>
+<div ng-controller="CtrlA">
+	<h1>CtrlA 
+		<input type="text" ng-model="msg"></input>
+	</h1>
+
+
+	<br><a ng-click="consoleChannels()" >consoleChannels</a>
+
+	<br><a ng-click="annunciatore(msg)" >announce to All</a>
+	<br><a ng-click="annunciatore(msg,'B')" >announce to B</a>
+	<br><a ng-click="annunciatore(msg,'C')" >announce to C</a>
+</div>
+<hr>
+<div ng-controller="CtrlB">
+	<h1>CtrlB {{msg}}</h1>
+
+</div>
+
+<div ng-controller="CtrlC">
+	<h1>CtrlC {{msg}}</h1>
+	<br><a ng-click="provaLiberaC()" >stop to listen on C</a>
+	
+
+</div>
+</body>
+</html>
