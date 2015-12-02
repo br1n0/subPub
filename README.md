@@ -40,12 +40,13 @@ and how deSubscrbe/freed a channel
 	// HOW  UnSUBSCRIBE a channel:
 	// just fire the function that was returned when you subscribed a channel
 	// to prevent memory leaks don't forget to do!
-	var channelSharedUnsubscribe()
+	channelSharedUnsubscribe()
 ```
 
 ```javascript
 	// HOW  Publish to a channel:
 	// just the data, and optionally the channel
+	// in case of channel parameter the default global channel will be used
 	SubPub.publish( "blaBlaBla",'B8')
 ```
 
