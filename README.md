@@ -24,7 +24,7 @@ and how deSubscrbe/freed a channel
 -------
 
 ```javascript
-	//HOW SUBSCRIBE a channel
+	// HOW SUBSCRIBE a channel:
 	// pass the function used to process the data, and optionally the channel name
 
 	// subscribe channel B, with aggiorna function
@@ -37,26 +37,22 @@ and how deSubscrbe/freed a channel
 ```
 
 ```javascript
-	//HOW  UnSUBSCRIBE a channel
-
-	//just fire the function that was returned when you subscribed a channel
+	// HOW  UnSUBSCRIBE a channel:
+	// just fire the function that was returned when you subscribed a channel
 	// to prevent memory leaks don't forget to do!
 	var channelSharedUnsubscribe()
 ```
 
 ```javascript
-	//HOW  Publish to a channel
-
-	//just the data, and optionally the channel
+	// HOW  Publish to a channel:
+	// just the data, and optionally the channel
 	SubPub.publish( "blaBlaBla",'B8')
 ```
 
 ```javascript
-	//HOW  get all the names of channels
-
-	//just the data, and optionally the channel
+	// HOW get all the names of channels:
 	SubPub.getChannels()
-	//an javascript objet with key -> key, 
-	// so you can test that a channel exist by key 
-	// or use the values if you want all
+	// a javascript objet will be returned with key to key, 
+	// so you can test easily that a channel exist, using key 
+	// or use the values if you need the channel list
 ```
