@@ -46,7 +46,6 @@ and how deSubscrbe/freed a channel
 	var channelSharedUnsubscribe()
 ```
 
-
 -------
 
 ```javascript
@@ -54,4 +53,16 @@ and how deSubscrbe/freed a channel
 
 	//just the data, and optionally the channel
 	SubPub.publish( "blaBlaBla",'B8')
+```
+
+-------
+
+```javascript
+	//HOW  get all the names of channels
+
+	//just the data, and optionally the channel
+	SubPub.getChannels()
+	//an javascript objet with key -> key, 
+	// so you can test that a channel exist by key 
+	// or use the values if you want all
 ```
