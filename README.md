@@ -45,3 +45,13 @@ and how deSubscrbe/freed a channel
 	//just fire the function that was returned when you subscribed a channel
 	var channelSharedUnsubscribe()
 ```
+
+
+-------
+
+```javascript
+	//HOW  Publish to a channel
+
+	//just the data, and optionally the channel
+	SubPub.publish( "blaBlaBla",'B8')
+```
