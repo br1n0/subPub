@@ -1,64 +1,53 @@
-
-/*
 'use strict';
-var angularPubSub = angular.module('PubSubModule', []);
-angularPubSub.provider('pubSub', function () {
-
-*/
-
 app.factory("SubPub", function ($rootScope)
-//angularSubPub.factory("SubPub", function ($rootScope)
 {
-	//thanks to http://becausejavascript.com/angularjs-pubsub-implementation-with-a-service/
+	//the idea came from http://becausejavascript.com/angularjs-pubsub-implementation-with-a-service/
 
 	var aChannel= {}
 
-	//bisogna fare subscribe sia piu semplice nel controller 
-    function fSubscribe (fn ,desiredEvent )
+	//for subscribe, parameter: callback and channelName (optionally)
+    function fSubscribe (fn ,sChannel )
     {
-		if(!desiredEvent)
-			desiredEvent= "globalEvent"
+		if(!sChannel)
+			sChannel= "globalEvent"
 
-		aChannel[desiredEvent]=desiredEvent
+		aChannel[sChannel]=sChannel
 
-        var unregister=  $rootScope.$on("SubPub." +desiredEvent ,function (e, data) {
-        	//console.log( "rootScope on" ,e, data ) //e e' l'evento, e.name e' il nome dell'evento
+        var unregisterCb=  $rootScope.$on( "SubPub."+sChannel ,function (e, data)
+        {
             fn(data);
         });
 
-        return unregister
+        return unregisterCb
     }
 
 
-
-    function fPublish (data,e)
+    // for pubilsh on a channel, parameter: data and Name of channel
+    function fPublish (data,sChannel)
     {
-    	//se manca evento specifico pubblica datii sul canale generico
-    	if( !e )
-    		e= "globalEvent"
+    	//if the channel is not specified, the defualt global is setted
+    	if( !sChannel )
+    		sChannel= "globalEvent"
 
-    	if( !aChannel[e] ) 
+    	if( !aChannel[sChannel] ) 
     	{
-    		console.log( "errore nessuno ascolta il canale",e )
-    		//return
+    		console.log( "errorr: nobody is listening! ",sChannel )
         }
 
-        $rootScope.$emit("SubPub." +e, data);
+        $rootScope.$emit("SubPub." +sChannel, data);
     }
 
-    //!!! perche' slice non funzica?
-    //ritorna l'elenco dei canali, questo array e' clonato per proteggerlo
+
+    //return an object of channels, defined k->k
 	function fGetChannels()
 	{
 		return JSON.parse(JSON.stringify(aChannel));
-
-		return aChannel //aChannel.slice()
 	}
+
 
     return {
         subscribe: fSubscribe,
         publish:   fPublish,
         getChannels: fGetChannels
-
     };
 });
