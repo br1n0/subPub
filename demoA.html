@@ -26,8 +26,6 @@ app.controller('CtrlA', function($scope,SubPub)
 	$scope.msg= "work"
 
 
-
-
 	//simplest way to associate publish to channel 
 	$scope.annunciatore= SubPub.publish
 
@@ -55,15 +53,16 @@ app.controller('CtrlB', function($scope,SubPub)
 	var channelShared=  SubPub.subscribe( aggiorna )
 	//PubSubService.subscribe( logga )
 
-	//subscribe channel B, with aggiorna function
-	var channelB= SubPub.subscribe( aggiorna, "B" )
-
 /*
-	//this method is less concise to subscribe the shared channel
-	SubPub.subscribe(function(data) {
+	//this method is less concise way to subscribe the shared channel
+	var channelShared= SubPub.subscribe(function(data) {
 	    aggiorna(data)
 	});
 */
+
+
+	//subscribe channel B, with aggiorna function
+	var channelB= SubPub.subscribe( aggiorna, "B" )
 
 
 	// to prevent memory leak remember to free subscribers,
@@ -94,10 +93,12 @@ app.controller('CtrlB', function($scope,SubPub)
 
 app.controller('CtrlC', function($scope,SubPub)
 {
-
+	//remeber to listern on $destroy to prevent memory leaks!
 	$scope.$on('$destroy',function(){
 	    //clean up code
 	    console.log("CtrlA","destroied")
+	    channelUnsubscribeC()
+	    channelUnsubscribeGlobal()
 	});
 
 	$scope.msg= "testTest"
@@ -116,7 +117,10 @@ app.controller('CtrlC', function($scope,SubPub)
 
 	//quando messaggio globale, aggiorna
 	//subscribe the global channel, calling aggiorna function, the pointer is saved
-	var myChannelUnsubscribe=  SubPub.subscribe( aggiorna )
+	var channelUnsubscribeC=  SubPub.subscribe( aggiorna ,"C")
+
+	var channelUnsubscribeGlobal=  SubPub.subscribe( aggiorna )
+
 
 	//publish on a channel not subscribed will fire on console an error, 
 	//to detect the rigth order subscribe, than publish
@@ -124,15 +128,12 @@ app.controller('CtrlC', function($scope,SubPub)
 	SubPub.publish( "cazzata",'B8')
 
 
-	//subscribe channel C, with aggiorna function
-	SubPub.subscribe( aggiorna, "C" )
 
-
-	//jus to show that unsubscribe work
+	//just to show that unsubscribe  the channel Global
 	$scope.provaLiberaC= function( )
 	{
 		console.log( "unsubscribe C" )
-		myChannelUnsubscribe() //deregister or freed the subscribed channel
+		channelUnsubscribeGlobal() //deregister or freed the subscribed channel
 		//so to properly freed a channler rimember to sava it, at creation
 		//you could save it on creation on array, annd deregister all the element in the array
 	}	
@@ -180,7 +181,7 @@ and how deSubscrbe/freed a channel
 
 	<br><a ng-click="consoleChannels()" >consoleChannels</a>
 
-	<br><a ng-click="annunciatore(msg)" >announce to All</a>
+	<br><a ng-click="annunciatore(msg)" >announce to global channel</a>
 	<br><a ng-click="annunciatore(msg,'B')" >announce to B</a>
 	<br><a ng-click="annunciatore(msg,'C')" >announce to C</a>
 </div>
@@ -192,7 +193,7 @@ and how deSubscrbe/freed a channel
 
 <div ng-controller="CtrlC">
 	<h1>CtrlC {{msg}}</h1>
-	<br><a ng-click="provaLiberaC()" >stop to listen on C</a>
+	<br><a ng-click="provaLiberaC()" >C stop to listen on global channel</a>
 	
 
 </div>
