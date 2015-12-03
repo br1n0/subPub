@@ -1,4 +1,7 @@
 'use strict';
+
+//Copyright (c) 2015 Bruno Trombi, publishe under The MIT License
+
 app.factory("SubPub", function ($rootScope)
 {
 	//the idea came from http://becausejavascript.com/angularjs-pubsub-implementation-with-a-service/
