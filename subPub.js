@@ -5,8 +5,9 @@ app.factory("SubPub", function ($rootScope)
 
 	var aChannel= {}
 
-	//for subscribe, parameter: callback and channelName (optionally)
-    function fSubscribe (fn ,sChannel )
+	// for subscribe:     Parameters: callback and channelName (optionally)
+    // when there will be new data on sChannel, the CallBack cb will  be called as cb(data)
+    function fSubscribe(cb,sChannel)
     {
 		if(!sChannel)
 			sChannel= "globalEvent"
@@ -15,14 +16,15 @@ app.factory("SubPub", function ($rootScope)
 
         var unregisterCb=  $rootScope.$on( "SubPub."+sChannel ,function (e, data)
         {
-            fn(data);
+            cb(data);
         });
 
         return unregisterCb
     }
 
 
-    // for pubilsh on a channel, parameter: data and Name of channel
+    // for pubilsh on a channel    Parameters: data and Name of channel
+    // it will publish the data on sChannel
     function fPublish (data,sChannel)
     {
     	//if the channel is not specified, the defualt global is setted
@@ -38,7 +40,7 @@ app.factory("SubPub", function ($rootScope)
     }
 
 
-    //return an object of channels, defined k->k
+    // return an object of channels, defined k->k
 	function fGetChannels()
 	{
 		return JSON.parse(JSON.stringify(aChannel));
